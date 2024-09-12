@@ -68,10 +68,17 @@
         (setq awa5x-mode--last-known-opener match))
       match)))
 
+(defconst awa5x-mode--font-lock-0
+  (list #'awa5x-mode--font-lock-open-tag 0 'awa5x-mode-opener-face)
+  "Font Lock base level.")
+
+(defconst awa5x-mode--font-lock-keywords
+  (list awa5x-mode--font-lock-0)
+  "Font Lock keywords levels.")
+
 (defvar awa5x-mode--font-lock-defaults
-  (list
-   (list
-    (list #'awa5x-mode--font-lock-open-tag 0 'awa5x-mode-opener-face))))
+  (list awa5x-mode--font-lock-keywords)
+  "Font Lock defaults.")
 
 (define-derived-mode awa5x-mode prog-mode "awa5x"
   "Major mode for editing awa5x code.
