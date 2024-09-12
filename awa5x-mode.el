@@ -39,8 +39,17 @@
   "Face to highlight the opening 'awa'."
   :group 'awa5x-mode)
 
+(defface awa5x-mode-preprocessor-face
+  '((default :inherit font-lock-preprocessor-face)
+    (t :inherit font-lock-preprocessor-face))
+  "Face to highlight preprocessor directives."
+  :group 'awa5x-mode)
+
 (defconst awa5x-mode-opener-face 'awa5x-mode-opener-face
   "Face name to use for the opening 'awa'.")
+
+(defconst awa5x-mode-preprocessor-face 'awa5x-mode-preprocessor-face
+  "Face name to use for preprocessor directives.")
 
 (defvar awa5x-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -72,8 +81,12 @@
   (list #'awa5x-mode--font-lock-open-tag 0 'awa5x-mode-opener-face)
   "Font Lock base level.")
 
+(defconst awa5x-mode--font-lock-1
+  '("#[[:upper:]]+" 0 font-lock-preprocessor-face)
+  "Font Lock level 1.")
+
 (defconst awa5x-mode--font-lock-keywords
-  (list awa5x-mode--font-lock-0)
+  (list awa5x-mode--font-lock-0 awa5x-mode--font-lock-1)
   "Font Lock keywords levels.")
 
 (defvar awa5x-mode--font-lock-defaults
