@@ -33,9 +33,6 @@
   :prefix "awa5x-mode-"
   :group 'languages)
 
-(defvar-local awa5x-mode--matched-start nil
-  "Whether the opening awa was found.")
-
 (defvar awa5x-mode-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\; "<" table)
@@ -47,9 +44,25 @@
   (let ((map (make-sparse-keymap "awa5x")))
     map))
 
-(defun awa5x-mode--font-lock-keywords (&optional limit)
+(defvar-local awa5x-mode--last-known-opener nil
+  "Where the last known opening 'awa' was located at.")
+
+(defun awa5x-mode--font-lock-open-tag (limit)
   "Apply Font Lock to the opening awa in a file."
-  nil)
+  (if (and (not (null awa5x-mode--last-known-opener))
+           (>= (point) awa5x-mode--last-known-opener))
+      nil
+    (let ((match nil))
+      (while (and (setq match (re-search-forward "\\<awa\\>" limit t))
+                  (nth 4 (syntax-ppss))))
+      (when match
+        (setq awa5x-mode--last-known-opener match))
+      match)))
+
+(defvar awa5x-mode--font-lock-defaults
+  (list
+   (list
+    (list #'awa5x-mode--font-lock-open-tag 0 'font-lock-builtin-face))))
 
 (define-derived-mode awa5x-mode prog-mode "awa5x"
   "Major mode for editing awa5x code.
@@ -60,7 +73,7 @@
   (setq-local comment-start ";")
   (setq-local comment-end "")
   (setq-local comment-start-skip ";+ *")
-  (setq-local font-lock-defaults '(awa5x-mode--font-lock-keywords)))
+  (setq-local font-lock-defaults awa5x-mode--font-lock-defaults))
 
 (provide 'awa5x-mode)
 ;;; awa5x.el ends here
