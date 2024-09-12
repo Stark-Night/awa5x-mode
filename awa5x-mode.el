@@ -33,6 +33,15 @@
   :prefix "awa5x-mode-"
   :group 'languages)
 
+(defface awa5x-mode-opener-face
+  '((default :inherit font-lock-builtin-face)
+    (t :inherit font-lock-builtin-face))
+  "Face to highlight the opening 'awa'."
+  :group 'awa5x-mode)
+
+(defconst awa5x-mode-opener-face 'awa5x-mode-opener-face
+  "Face name to use for the opening 'awa'.")
+
 (defvar awa5x-mode-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\; "<" table)
@@ -62,7 +71,7 @@
 (defvar awa5x-mode--font-lock-defaults
   (list
    (list
-    (list #'awa5x-mode--font-lock-open-tag 0 'font-lock-builtin-face))))
+    (list #'awa5x-mode--font-lock-open-tag 0 'awa5x-mode-opener-face))))
 
 (define-derived-mode awa5x-mode prog-mode "awa5x"
   "Major mode for editing awa5x code.
