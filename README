@@ -1,0 +1,4 @@
+Emacs major mode aimed at awa5x programs.
+
+This mode will highlight the opening 'awa' of a file and provides
+commands to insert opcodes and parameters without missing a word.
