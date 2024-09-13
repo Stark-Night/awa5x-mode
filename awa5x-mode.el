@@ -58,8 +58,49 @@
     table)
   "Syntax table for `awa5x-mode'.")
 
+(defconst awa5x-mode--opcode-alist
+  '((NOP . #x00) (PRN . #x01) (PR1 . #x02) (RED . #x03) (R3D . #x04)
+    (BLO . #x05) (SBM . #x06) (POP . #x07) (DPL . #x08) (SRN . #x09)
+    (MRG . #x0A) (4DD . #x0B) (SUB . #x0C) (MUL . #x0D) (DIV . #x0E)
+    (CNT . #x0F) (LBL . #x10) (JMP . #x11) (EQL . #x12) (LSS . #x13)
+    (GR8 . #x14) (EQZ . #x15) (TLB . #x16) (JTL . #x17) (CLL . #x18)
+    (RET . #x19) (LDO . #x1A) (CDO . #x1B)
+    (TRM . #x1F))
+  "Alist of opcode names and their hexadecimal value.")
+
+(defun awa5x-mode-insert-opcode ()
+  "Insert the specified opcode at point, in its awatism form."
+  (interactive)
+  (let ((names (mapcar #'car awa5x-mode--opcode-alist)))
+    (let ((given (completing-read "Opcode name: " names nil t nil t)))
+      (let ((numberval (cdr (assoc (intern given)
+                                   awa5x-mode--opcode-alist))))
+        (let ((stringed
+               (concat (if (zerop (logand numberval 16)) "awa" "~wa")
+                       (if (zerop (logand numberval 8)) " awa" "wa")
+                       (if (zerop (logand numberval 4)) " awa" "wa")
+                       (if (zerop (logand numberval 2)) " awa" "wa")
+                       (if (zerop (logand numberval 1)) " awa " "wa "))))
+          (insert stringed))))))
+
+(defun awa5x-mode-insert-parameter (parameter)
+  "Insert the given number in its awatism form."
+  (interactive "nParameter to insert: ")
+  (let ((stringed
+         (concat (if (zerop (logand parameter 128)) "awa" "~wa")
+                 (if (zerop (logand parameter 64)) " awa" "wa")
+                 (if (zerop (logand parameter 32)) " awa" "wa")
+                 (if (zerop (logand parameter 16)) " awa" "wa")
+                 (if (zerop (logand parameter 8)) " awa" "wa")
+                 (if (zerop (logand parameter 4)) " awa" "wa")
+                 (if (zerop (logand parameter 2)) " awa" "wa")
+                 (if (zerop (logand parameter 1)) " awa " "wa "))))
+    (insert stringed)))
+
 (defvar awa5x-mode-map
   (let ((map (make-sparse-keymap "awa5x")))
+    (define-key map (kbd "C-c C-o") #'awa5x-mode-insert-opcode)
+    (define-key map (kbd "C-c C-p") #'awa5x-mode-insert-parameter)
     map))
 
 (defvar-local awa5x-mode--last-known-opener nil
